@@ -1,0 +1,27 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: aso2
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  url: https://raw.githubusercontent.com/Azure/azure-service-operator/main/v2/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: azure-workload-identity
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  url: https://azure.github.io/azure-workload-identity/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: jetstack
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  url: https://charts.jetstack.io

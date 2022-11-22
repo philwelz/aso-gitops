@@ -1,0 +1,38 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cert-manager
+spec:
+  chart:
+    spec:
+      chart: cert-manager
+      version: "Placeholder"
+      sourceRef:
+        kind: HelmRepository
+        name: jetstack
+        namespace: flux-system
+  values:
+    # Source: https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+    installCRDs: true
+    nodeSelector:
+      kubernetes.azure.com/mode: system
+    tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+    cainjector:
+      nodeSelector:
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+    webhook:
+      nodeSelector:
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+  interval: 5m
