@@ -1,0 +1,11 @@
+apiVersion: resources.azure.com/v1beta20200601
+kind: ResourceGroup
+metadata:
+  name: rg-aso-gitops-demo-workload
+  namespace: demo
+spec:
+  location: westeurope
+  tags:
+    env: demo
+    managedBy: aks-aso-gitops-demo/gitops
+    project: aso-gitops

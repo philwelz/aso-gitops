@@ -15,4 +15,4 @@ spec:
   values:
     # Source: https://github.com/Azure/azure-workload-identity/blob/main/charts/workload-identity-webhook/values.yaml
     azureTenantID: "f1847c27-90be-4b38-a1b7-bd3a2029122f"
-  interval: 5m
+  interval: 1m

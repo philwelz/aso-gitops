@@ -24,16 +24,13 @@ az extension list -o table
 ## Deploy
 
 ```bash
-# What-if
-az deployment sub what-if \
-  --name AksBicepDeployment \
-  --location westeurope \
-  --template-file ./bicep/main.bicep
-# Deploy
-az deployment sub create \
-  --name AksBicepDeployment \
-  --location westeurope \
-  --template-file ./bicep/main.bicep
+# Init Terraform
+terraform init
+# Execute Terraform plan to see changes
+terraform plan
+# Execute Terraform apply with automatic approval
+terraform apply -auto-approve
+# Get needed ID
 ```
 
 ## Useful commands
@@ -52,83 +49,3 @@ kubectl get helmrepositories -A
 * [Deploy and manage cluster extensions for AKS](https://docs.microsoft.com/en-us/azure/aks/cluster-extensions?tabs=azure-cli)
 * [Cluster exensions - Overview](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-extensions)
 * [GitOps on Azure](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2)
-
-
-```bicep
-// ################################
-// ############# Flux #############
-// ################################
-
-resource flux 'Microsoft.KubernetesConfiguration/extensions@2021-09-01' = {
-  name: 'flux'
-  scope: aksCluster
-  properties: {
-    autoUpgradeMinorVersion: true
-    configurationProtectedSettings: {}
-    configurationSettings: {
-      'helm-controller.enabled': 'true' // enabled by default
-      'source-controller.enabled': 'true' // enabled by default
-      'kustomize-controller.enabled': 'true' // enabled by default
-      'notification-controller.enabled': 'true' // enabled by default
-      'image-automation-controller.enabled': 'true' // disabled by default
-      'image-reflector-controller.enabled': 'true' // disabled by default
-    }
-    extensionType: 'microsoft.flux'
-    scope: {
-      cluster: {
-        releaseNamespace: 'flux-system'
-      }
-    }
-  }
-}
-
-// ################################
-// ######### Flux Config ##########
-// ################################
-
-resource fluxConfig 'Microsoft.KubernetesConfiguration/fluxConfigurations@2021-11-01-preview' = {
-  name: 'flux-config'
-  scope: aksCluster
-  dependsOn: [
-    flux
-  ]
-  properties: {
-    scope: 'cluster'
-    namespace: 'flux-system'
-    sourceKind: 'GitRepository'
-    suspend: false
-
-    gitRepository: {
-      url: 'https://github.com/whiteducksoftware/fluxcd-example'
-      timeoutInSeconds: 600
-      syncIntervalInSeconds: 600
-      repositoryRef: {
-        branch: 'main'
-      }
-
-    }
-    kustomizations: {
-      cluster: {
-        path: './clusters/${stage}'
-        dependsOn: []
-        timeoutInSeconds: 600
-        syncIntervalInSeconds: 600
-        validation: 'server'
-        prune: true
-      }
-    //   apps: {
-    //     path: './apps/staging'
-    //     dependsOn: [
-    //       {
-    //         kustomizationName: 'infra'
-    //       }
-    //     ]
-    //     timeoutInSeconds: 600
-    //     syncIntervalInSeconds: 600
-    //     retryIntervalInSeconds: 600
-    //     prune: true
-    //   }
-    }
-  }
-}
-```

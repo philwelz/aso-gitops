@@ -1,0 +1,55 @@
+apiVersion: documentdb.azure.com/v1alpha1api20210515
+kind: DatabaseAccount
+metadata:
+  name: cs-aso-gitops-demo
+  namespace: demo
+spec:
+  location: westeurope
+  owner:
+    name: rg-aso-gitops-demo-workload
+  tags:
+    env: demo
+    managedBy: aks-aso-gitops-demo/gitops
+    project: aso-gitops
+  kind: GlobalDocumentDB
+  databaseAccountOfferType: Standard
+  locations:
+    - locationName: westeurope
+  operatorSpec:
+    secrets:
+      primaryMasterKey:
+        name: cosmos-connection-settings
+        key: key
+      documentEndpoint:
+        name: cosmos-connection-settings
+        key: documentEndpoint
+---
+apiVersion: documentdb.azure.com/v1alpha1api20210515
+kind: SqlDatabase
+metadata:
+  name: db-cs-aso-gitops-demo
+  namespace: demo
+spec:
+  location: westeurope
+  owner:
+    name: cs-aso-gitops-demo
+#  options:
+#    autoscaleSettings:
+#      maxThroughput: 4000
+  resource:
+    id: db-cs-aso-gitops-demo
+---
+apiVersion: documentdb.azure.com/v1alpha1api20210515
+kind: SqlDatabaseContainer
+metadata:
+  name: db-cs-aso-gitops-demo-container
+  namespace: demo
+spec:
+  location: westeurope
+  owner:
+    name: db-cs-aso-gitops-demo
+  resource:
+    id: db-cs-aso-gitops-demo-container
+    partitionKey:
+      kind: Hash
+      paths: ["/id"]

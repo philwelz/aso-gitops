@@ -2,13 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: system-defaults
+  name: azure-services
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: system-services
   interval: 1m
   sourceRef:
     kind: GitRepository
     name: flux-config
-  path: ./gitops/platform/defaults
+  path: ./gitops/platform/demo/azure
   prune: true
   validation: server

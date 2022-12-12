@@ -1,0 +1,79 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+spec:
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: "Placeholder"
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  upgrade:
+    remediation:
+      remediateLastFailure: true
+  interval: 1m0s
+  values:
+    # Source: https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+    controller:
+      name: controller
+
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      ingressClassResource:
+        name: nginx
+        enabled: true
+        default: false
+        controllerValue: k8s.io/ingress-nginx
+
+      # For backwards compatibility with ingress.class annotation, use ingressClass.
+      ingressClass: nginx
+
+      livenessProbe:
+        httpGet:
+          # should match container.healthCheckPath
+          path: "/healthz"
+          port: 10254
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 1
+        successThreshold: 1
+        failureThreshold: 3
+
+      healthCheckPath: "/healthz"
+
+      replicaCount: 2
+
+      minAvailable: 1
+
+      service:
+        annotations:
+          service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+
+      config:
+        use-gzip: true
+        gzip-level: 5
+        http-redirect-code: 301
+        ssl-ciphers: "HIGH:!aNULL:!MD5:ECDHE-RSA-AES128-SHA"
+        ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
+        proxy-buffer-size: "8k"
+        disable-access-log: true
+
+      defaultBackend:
+        enabled: false
+
+    rbac:
+      create: true
+
+    podSecurityPolicy:
+      enabled: false
+
+    serviceAccount:
+      create: true

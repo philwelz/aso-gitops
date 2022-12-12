@@ -35,11 +35,11 @@ resource "azurerm_role_assignment" "aks_metrics_publisher" {
 ################################
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                   = "aks"
-  kubernetes_version     = "1.24.6"
+  name                   = "aks-${var.prefix}-${var.stage}"
+  kubernetes_version     = var.kubernetes_version
   location               = azurerm_resource_group.aks-rg.location
   resource_group_name    = azurerm_resource_group.aks-rg.name
-  dns_prefix             = "aks"
+  dns_prefix             = "aks-${var.prefix}-${var.stage}"
   local_account_disabled = "false"
   oidc_issuer_enabled    = "true"
   tags                   = local.common_tags
@@ -47,7 +47,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   azure_active_directory_role_based_access_control {
     managed                = true
     tenant_id              = data.azurerm_client_config.current.tenant_id
-    admin_group_object_ids = ["429bfc0b-dac5-4dd8-862a-831985f20e4d"] // WD Cloud Team
+    admin_group_object_ids = ["429bfc0b-dac5-4dd8-862a-831985f20e4d"]
     azure_rbac_enabled     = true
   }
 
@@ -68,7 +68,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 # Create Workload node pool
 resource "azurerm_kubernetes_cluster_node_pool" "workload" {
   kubernetes_cluster_id  = azurerm_kubernetes_cluster.aks.id
-  orchestrator_version   = "1.24.6"
+  orchestrator_version   = var.kubernetes_version
   name                   = "aks0workload"
   node_count             = 2
   vm_size                = "Standard_D2as_v5"

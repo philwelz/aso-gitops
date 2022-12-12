@@ -15,4 +15,4 @@ spec:
   values:
     # Source: https://github.com/Azure/azure-service-operator/blob/main/v2/charts/azure-service-operator/values.yaml
     installCRDs: true
-  interval: 5m
+  interval: 1m

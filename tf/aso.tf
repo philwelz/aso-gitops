@@ -21,36 +21,3 @@ resource "azurerm_role_assignment" "uai_aso_sub_owner" {
   principal_id                     = azurerm_user_assigned_identity.aso.principal_id
   skip_service_principal_aad_check = true
 }
-
-# create secret
-resource "kubernetes_namespace" "aso" {
-  depends_on = [
-    azurerm_kubernetes_cluster.aks,
-    azurerm_kubernetes_cluster_node_pool.workload
-  ]
-
-  metadata {
-    name = "azureserviceoperator-system"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-    ]
-  }
-}
-
-resource "kubernetes_secret_v1" "aso" {
-  metadata {
-    name      = "aso-controller-settings"
-    namespace = kubernetes_namespace.aso.metadata.0.name
-  }
-
-  data = {
-    AZURE_CLIENT_ID       = azurerm_user_assigned_identity.aso.client_id
-    AZURE_SUBSCRIPTION_ID = data.azurerm_subscription.current.id
-    AZURE_TENANT_ID       = data.azurerm_subscription.current.tenant_id
-  }
-
-  type = "Opaque"
-}

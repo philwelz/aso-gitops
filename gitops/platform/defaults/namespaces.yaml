@@ -13,3 +13,13 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: azure-workload-identity-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azureserviceoperator-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress-nginx

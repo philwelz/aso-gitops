@@ -45,8 +45,8 @@ resource "azapi_resource" "flux_config" {
 
       gitRepository = {
         url                   = "https://github.com/philwelz/aso-gitops"
-        timeoutInSeconds      = 600
-        syncIntervalInSeconds = 600
+        timeoutInSeconds      = 60
+        syncIntervalInSeconds = 60
         repositoryRef = {
           branch = "main"
         }
@@ -56,8 +56,8 @@ resource "azapi_resource" "flux_config" {
         cluster = {
           path                  = "./gitops/clusters/${var.stage}"
           dependsOn             = []
-          timeoutInSeconds      = 600
-          syncIntervalInSeconds = 600
+          timeoutInSeconds      = 60
+          syncIntervalInSeconds = 60
           prune                 = true
         }
       }

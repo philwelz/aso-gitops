@@ -16,7 +16,7 @@ spec:
     # Source: https://github.com/Azure/azure-service-operator/blob/main/v2/charts/azure-service-operator/values.yaml
     createAzureOperatorSecret: true
     useWorkloadIdentityAuth: true
-    azureSubscriptionID: "f1847c27-90be-4b38-a1b7-bd3a2029122f"
+    azureSubscriptionID: "868387ea-d436-4733-aef2-2adc325e4007"
     azureTenantID: "f1847c27-90be-4b38-a1b7-bd3a2029122f"
-    azureClientID: "a91a06f8-9fb3-4d13-9e40-a9c297fd3226"
-  interval: 5m
+    azureClientID: "f37399db-da3a-45f3-8319-5873accea269"
+  interval: 1m

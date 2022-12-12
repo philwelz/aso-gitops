@@ -35,4 +35,4 @@ spec:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
           effect: "NoSchedule"
-  interval: 5m
+  interval: 1m
